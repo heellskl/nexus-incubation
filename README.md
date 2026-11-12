@@ -32,6 +32,16 @@
 
 Запасной вариант без Supabase — Google Таблица: см. `google-apps-script.gs` и `SUBMIT_URL`.
 
+## Письма по заявкам (Gmail)
+Supabase отправляет три вида писем: подтверждение кандидату, уведомление организаторам
+и письмо о решении, когда `status` меняется на `accepted` или `rejected`.
+Код: `supabase/functions/notify-application`, триггеры: `supabase/notifications.sql`.
+
+Секреты (Supabase → Edge Functions → Secrets):
+- `GMAIL_USER` — адрес Gmail отправителя
+- `GMAIL_APP_PASSWORD` — пароль приложения Google (myaccount.google.com/apppasswords, нужна двухэтапная аутентификация)
+- `ORGANIZER_EMAILS` — адреса организаторов через запятую
+
 ## Контакты
 В `index.html` заполните `CONTACTS: { email: '', phone: '', telegram: '', instagram: '' }` —
 заполненные поля появятся в блоке «Контакты».

@@ -419,7 +419,15 @@ form.apply.swap{animation:panelIn .4s var(--ease) both}
 .checks input:checked+span{border-color:var(--orange);color:var(--orange);background:rgba(243,163,103,.1)}
 .checks input:focus-visible+span{outline:2px solid var(--orange);outline-offset:2px}
 .agree{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.45;color:var(--muted);cursor:pointer}
-.agree input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--orange)}
+.f .agree input[type=checkbox]{width:26px;height:26px;min-width:26px;flex:none;margin:0;padding:0;border-radius:8px;border:1.5px solid var(--lav);
+  background:var(--navy) center/16px no-repeat;cursor:pointer;-webkit-appearance:none;appearance:none;
+  transition:background-color .2s,border-color .2s,box-shadow .2s,transform .15s}
+.f .agree input[type=checkbox]:hover{border-color:var(--orange)}
+.f .agree input[type=checkbox]:active{transform:scale(.9)}
+.f .agree input[type=checkbox]:checked{background-color:var(--orange);border-color:var(--orange);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%2317173F' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.f .agree input[type=checkbox]:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.f.err .agree input[type=checkbox]{border-color:#FF7A7A}
 .form-warn{margin-bottom:20px}
 .submit-row{margin-top:26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .submit-row .btn{min-width:240px}

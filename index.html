@@ -796,6 +796,9 @@ form.apply.swap{animation:panelIn .4s var(--ease) both}
 
 /* =====================================================================
    НАСТРОЙКИ
+   SUPABASE_URL / SUPABASE_ANON_KEY — проект Supabase, куда сохраняются заявки
+   (таблица applications, см. supabase.sql). Ключ anon публичный: таблица
+   защищена политикой RLS, посетители могут только добавлять заявки, но не читать их.
    SUBMIT_URL — адрес приёма заявок (POST, JSON), например веб-приложение
    Google Apps Script, которое пишет в Google Таблицу (см. google-apps-script.gs).
    Пока адрес пустой, заявка не отправляется: посетитель видит её текст
@@ -803,6 +806,9 @@ form.apply.swap{animation:panelIn .4s var(--ease) both}
    CONTACTS — контакты организаторов; заполненные поля появятся на сайте.
    ===================================================================== */
 var CONFIG = {
+  SUPABASE_URL: '',        // например 'https://abcdefgh.supabase.co'
+  SUPABASE_ANON_KEY: '',   // Project Settings → API Keys → anon / publishable
+  SUPABASE_TABLE: 'applications',
   SUBMIT_URL: '',
   CONTACTS: { email: '', phone: '', telegram: '', instagram: '' }
 };
@@ -1012,7 +1018,7 @@ var ROLES = {
     intro:'Менторы консультируют команды по запросу — по технологиям, отрасли и бизнесу.',
     fields:[
       {id:'status', label:'Текущий статус', type:'select', req:true, opts:['Работаю по найму','Предприниматель / основатель','Инвестор','Независимый эксперт / консультант','Преподаватель / исследователь']},
-      {id:'years', label:'Профессиональный опыт', type:'select', req:true, opts:['3–5 лет','5–10 лет','Более 10 лет']},
+      {id:'years', label:'Профессиональный опыт', type:'select', req:true, opts:['Нет опыта','1–3 года','3–5 лет','5–10 лет','Более 10 лет']},
       {id:'experience', label:'Статус / Место работы и опыт', type:'textarea', req:true, full:true,
         ph:'Компания и должность, ключевые проекты, опыт работы со стартапами',
         hint:'Укажите место работы, должность и опыт, полезный командам'},
@@ -1026,7 +1032,7 @@ var ROLES = {
     intro:'Трекер ведёт закреплённые команды: еженедельные встречи 1:1 и участие в Board Meetings.',
     fields:[
       {id:'workplace', label:'Место работы и должность', type:'text', req:true, ph:'Компания, должность', full:true},
-      {id:'years', label:'Профессиональный опыт', type:'select', req:true, opts:['3–5 лет','5–10 лет','Более 10 лет']},
+      {id:'years', label:'Профессиональный опыт', type:'select', req:true, opts:['Нет опыта','1–3 года','3–5 лет','5–10 лет','Более 10 лет']},
       {id:'tracked', label:'Опыт трекинга / акселерации', type:'select', req:true, opts:['Трекер или ментор в акселераторе','Основатель стартапа','Руководитель продуктовой команды','Иной релевантный опыт']},
       {id:'experience', label:'Подтверждение профессионального опыта', type:'textarea', req:true, full:true,
         ph:'Программы, проекты и результаты работы со стартапами или продуктовыми командами',
@@ -1207,11 +1213,28 @@ form.addEventListener('submit', function(e){
     return;
   }
   var data = collect(), btn = form.querySelector('button[type=submit]');
-  if (!CONFIG.SUBMIT_URL){ showResult(data, 'offline'); return; }
+  var useSb = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+  if (!useSb && !CONFIG.SUBMIT_URL){ showResult(data, 'offline'); return; }
   btn.disabled = true; btn.innerHTML = '<i class="spin" aria-hidden="true"></i><span class="bt">Отправляем…</span>';
-  fetch(CONFIG.SUBMIT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(data)})
-    .then(function(){ showResult(data, 'sent'); })
-    .catch(function(){ showResult(data, 'error'); });
+  var req;
+  if (useSb){
+    var COLS = ['name','email','phone','telegram','city'], details = {};
+    Object.keys(data).forEach(function(k){
+      if (COLS.indexOf(k) === -1 && ['role','roleKey','submittedAt','notStudentConfirmed','consent'].indexOf(k) === -1) details[k] = data[k];
+    });
+    var row = {role: data.roleKey, role_title: data.role, name: data.name, email: data.email, phone: data.phone,
+               telegram: data.telegram || null, city: data.city, not_student_confirmed: !!data.notStudentConfirmed, details: details};
+    req = fetch(CONFIG.SUPABASE_URL.replace(/\/+$/,'') + '/rest/v1/' + CONFIG.SUPABASE_TABLE, {
+      method:'POST',
+      headers:{'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+               'Content-Type':'application/json', 'Prefer':'return=minimal'},
+      body: JSON.stringify(row)
+    }).then(function(res){ if (!res.ok) throw new Error('HTTP ' + res.status); });
+  } else {
+    req = fetch(CONFIG.SUBMIT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(data)});
+  }
+  req.then(function(){ showResult(data, 'sent'); })
+     .catch(function(){ showResult(data, 'error'); });
 });
 
 function showResult(d, state){

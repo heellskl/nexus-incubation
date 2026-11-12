@@ -16,10 +16,21 @@
 3. Framework Preset: **Other**, Build Command — пусто, Output Directory — пусто → Deploy.
    Каждое изменение в репозитории будет публиковаться автоматически.
 
-## Приём заявок
-1. Откройте `google-apps-script.gs` и выполните шаги из комментария в начале файла.
-2. Вставьте полученный URL в `index.html`: `SUBMIT_URL: 'https://script.google.com/macros/s/.../exec'`.
-3. Опубликуйте сайт заново (`npx vercel --prod` или commit в GitHub).
+## Приём заявок — Supabase
+1. Создайте проект на https://supabase.com (бесплатный тариф подходит).
+2. **SQL Editor → New query** → вставьте содержимое `supabase.sql` → **Run**.
+   Создастся таблица `applications`: посетители могут только добавлять заявки, читать их — нет.
+3. **Project Settings → API Keys**: скопируйте **Project URL** и ключ **anon / publishable**
+   (не `service_role` — его никогда нельзя вставлять на сайт).
+4. Вставьте их в `index.html`, в блок `CONFIG`:
+   `SUPABASE_URL: 'https://xxxx.supabase.co'`, `SUPABASE_ANON_KEY: '...'`.
+5. Сохраните изменения в GitHub — Vercel опубликует сайт сам.
+
+Заявки смотрите в **Table Editor → applications** (или в представлении `applications_readable`
+с русскими названиями колонок); оттуда же можно выгрузить CSV.
+Колонка `status` (`new` / `in_review` / `accepted` / `rejected`) — для отметок организаторов.
+
+Запасной вариант без Supabase — Google Таблица: см. `google-apps-script.gs` и `SUBMIT_URL`.
 
 ## Контакты
 В `index.html` заполните `CONTACTS: { email: '', phone: '', telegram: '', instagram: '' }` —

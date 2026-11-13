@@ -708,9 +708,6 @@ html[data-theme="light"] .hv-sum{background:linear-gradient(100deg,#B5571A,#D98A
         <a class="btn primary" href="#stay" id="tuneBtn">Получить уведомление</a>
       </div>
     </div>
-
-    <a class="hv-tuned" href="#stay" aria-label="Stay Tuned — к блоку для потенциальных участников"><span>Stay Tuned</span>
-      <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
   </div>
 </section>
 
@@ -1554,7 +1551,7 @@ function markRegistered(d){
 try { if (localStorage.getItem('nexus-registered')) statusEl.classList.add('show'); } catch(e){}
 
 /* «Stay Tuned» в hero: прокрутка к форме и фокус */
-$$('#tuneBtn, .hv-tuned').forEach(function(el){ el.addEventListener('click', function(){ setTimeout(function(){ var i = $('#stayContact'); if (i && !$('#stay').classList.contains('joined')) i.focus({preventScroll:true}); }, RM ? 0 : 650); }); });
+$$('#tuneBtn').forEach(function(el){ el.addEventListener('click', function(){ setTimeout(function(){ var i = $('#stayContact'); if (i && !$('#stay').classList.contains('joined')) i.focus({preventScroll:true}); }, RM ? 0 : 650); }); });
 
 /* deep link: #apply-mentor etc. */
 function fromHash(){

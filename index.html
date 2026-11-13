@@ -709,7 +709,7 @@ html[data-theme="light"] .hv-sum{background:linear-gradient(100deg,#B5571A,#D98A
       </div>
     </div>
 
-    <a class="hv-tuned" href="#about" aria-label="Stay Tuned — листать вниз"><span>Stay Tuned</span>
+    <a class="hv-tuned" href="#stay" aria-label="Stay Tuned — к блоку для потенциальных участников"><span>Stay Tuned</span>
       <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
   </div>
 </section>
@@ -1077,7 +1077,7 @@ document.addEventListener('click', function(e){
   var id = a.getAttribute('href'); if (id.length < 2) return;
   var t = document.querySelector(id); if (!t) return;
   e.preventDefault();
-  var top = id === '#top' ? 0 : t.getBoundingClientRect().top + window.scrollY - 80;
+  var top = 0; if (id !== '#top'){ for (var el = t; el; el = el.offsetParent) top += el.offsetTop; top -= 96; }  // offsetTop не учитывает анимацию появления
   window.scrollTo({top: top, behavior: RM ? 'auto' : 'smooth'});
 });
 
@@ -1554,7 +1554,7 @@ function markRegistered(d){
 try { if (localStorage.getItem('nexus-registered')) statusEl.classList.add('show'); } catch(e){}
 
 /* «Stay Tuned» в hero: прокрутка к форме и фокус */
-$('#tuneBtn').addEventListener('click', function(){ setTimeout(function(){ var i = $('#stayContact'); if (i && !$('#stay').classList.contains('joined')) i.focus({preventScroll:true}); }, RM ? 0 : 650); });
+$$('#tuneBtn, .hv-tuned').forEach(function(el){ el.addEventListener('click', function(){ setTimeout(function(){ var i = $('#stayContact'); if (i && !$('#stay').classList.contains('joined')) i.focus({preventScroll:true}); }, RM ? 0 : 650); }); });
 
 /* deep link: #apply-mentor etc. */
 function fromHash(){

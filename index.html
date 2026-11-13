@@ -504,7 +504,9 @@ html[data-theme="light"] .theme-btn .moon{opacity:1;transform:none}
 /* ---------- таймер ---------- */
 .countdown{margin-top:30px}
 .cd-lbl{font-size:17px;color:var(--lav);font-weight:400}
-.cd-boxes{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+.cd-boxes{display:flex;align-items:flex-start;gap:8px;margin-top:12px}
+.cd-sep{font-family:var(--serif);font-size:clamp(34px,3.6vw,44px);line-height:1;color:var(--orange-ink);padding-top:14px;animation:cdBlink 1s steps(1,end) infinite}
+@keyframes cdBlink{50%{opacity:.25}}
 .cd-box{min-width:88px;padding:14px 12px 12px;border-radius:16px;background:var(--card);border:1px solid var(--cardline);text-align:center;
   box-shadow:0 10px 30px rgba(0,0,0,.12)}
 .cd-num{display:block;font-family:var(--serif);font-size:clamp(34px,3.6vw,44px);line-height:1;color:var(--orange-ink);font-variant-numeric:tabular-nums}
@@ -514,7 +516,7 @@ html[data-theme="light"] .theme-btn .moon{opacity:1;transform:none}
 .cd-note{margin-top:12px;font-size:16px;color:var(--muted);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .cd-note a{color:var(--orange-ink);text-decoration:none;border-bottom:1px solid currentColor;font-weight:500}
 .cd-open{display:inline-flex;align-items:center;gap:10px;margin-top:12px;font-size:20px;color:var(--green-ink);font-weight:500}
-@media (max-width:520px){.cd-boxes{gap:8px}.cd-box{min-width:0;flex:1;padding:12px 4px 10px}.cd-unit{font-size:13px}}
+@media (max-width:520px){.cd-boxes{gap:4px}.cd-box{min-width:0;flex:1;padding:12px 4px 10px}.cd-unit{font-size:13px}.cd-sep{font-size:28px;padding-top:16px}}
 
 /* ---------- Stay Tuned ---------- */
 .stay{margin-top:20px;padding:clamp(28px,4vw,44px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,48px);align-items:center;
@@ -550,6 +552,7 @@ html[data-theme="light"] .theme-btn .moon{opacity:1;transform:none}
   .circuit path{stroke-dashoffset:0!important;animation:none!important}
   .circuit circle{opacity:1!important;animation:none!important}
   .prize-hero::before{display:none}
+  .cd-sep{animation:none}
   .card,.chip,.btn{transition:none}
   .scroll-cue i{animation:none}
   .qa .ans{transition:none}
@@ -613,8 +616,11 @@ html[data-theme="light"] .theme-btn .moon{opacity:1;transform:none}
         <div class="cd-lbl">Регистрация откроется через:</div>
         <div class="cd-boxes" role="timer" aria-label="До открытия регистрации">
           <div class="cd-box"><span class="cd-num" data-u="d">00</span><span class="cd-unit" data-l="d">дней</span></div>
+          <span class="cd-sep" aria-hidden="true">:</span>
           <div class="cd-box"><span class="cd-num" data-u="h">00</span><span class="cd-unit" data-l="h">часов</span></div>
+          <span class="cd-sep" aria-hidden="true">:</span>
           <div class="cd-box"><span class="cd-num" data-u="m">00</span><span class="cd-unit" data-l="m">минут</span></div>
+          <span class="cd-sep" aria-hidden="true">:</span>
           <div class="cd-box"><span class="cd-num" data-u="s">00</span><span class="cd-unit" data-l="s">секунд</span></div>
         </div>
         <div class="cd-note">Открытие регистрации 20 ноября в 23:59 <a href="#stay">Получить уведомление →</a></div>
